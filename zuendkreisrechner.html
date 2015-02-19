@@ -1,0 +1,306 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Zuendkreisrechner</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<meta name="description" content="Ein webbasierter Zündkreisrechner, mit dessen Hilfe die maximale Anzahl der auslösenden Elektro-Zünder in einer Reihenschaltung von pyrotechnischen Anzündern bei gegebener Kabellänge berechnet werden kann.">
+
+	<link rel="stylesheet" href="css/bootstrap.css">
+	<link rel="stylesheet" href="css/bootstrap-switch.css">
+	<style type="text/css">
+	.top-offset-5 { margin-top:5px; }
+	.top-offset-10 { margin-top:10px; }
+	.top-offset-15 { margin-top:15px; }
+	.top-offset-30 { margin-top:30px; }
+	.bottom-offset-5 { margin-bottom:5px; }
+	.bottom-offset-10 { margin-bottom:10px; }
+	.bottom-offset-15 { margin-bottom:15px; }
+	.bottom-offset-30 { margin-bottom:30px; }
+	.nav > li > div {
+		position: relative;
+		display: block;
+		padding: 10px 15px;
+	}
+	</style>
+</head>
+<body>
+	<nav class="navbar navbar-default">
+		<div class="container">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-div">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<div class="navbar-brand visible-xs" href="#">Zündkreisrechner</div>
+			</div>
+
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse" id="navbar-collapse-div">
+				<ul class="nav navbar-nav">
+					<li>
+						<div class="text-center">
+							<input type="checkbox" id="expertToggle">
+						</div>
+					</li>
+			</div><!-- /.navbar-collapse -->
+		</div><!-- /.container-fluid -->
+	</nav>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-10 col-sm-offset-1">
+				<div class="hidden-xs">
+					<div class="page-header">
+						<h1 class="hidden-xs">Zündkreisrechner</h1>
+					</div>
+					<p class="hidden-xs">
+						Dieser Rechner erlaubt es dir, sowohl die möglichen auslösenden Zünder als auch die benötigte Spannung zu berechnen. Als grundsätzliche Angaben werden immer die Länge der Verkabelung (<strong>Beachte, dass der Hin- <u>und</u> Rückweg zählt!</strong>) als auch der Kabelquerschnitt benötigt.
+					</p>
+					<p class="hidden-xs">Du kannst zum einen bei gegebener Spannung (z.B. einer Blockbatterie mit 9V) die Anzahl der zündbaren Zünder berechnen. Andersrum ist es auch möglich, die nötige Spannung für eine gewünschte Anzahl von Zündern zu berechnen.
+					</p>
+					<p class="lead hidden-xs text-warning">
+						Bisher ist es leider nur möglich, eine Reihenschaltung zu berechen!
+					</p>
+					<p class="h3 hidden-xs text-primary bottom-offset-15">
+						Was möchtest du berechnen?
+					</p>
+				</div>
+				<p class="text-center"><input type="checkbox" id="calcToggle" checked></p>
+			</div>
+		</div>
+
+		<div class="row top-offset-5">
+			<div class="col-sm-10 col-md-10 col-sm-offset-1 col-md-offset-1">
+				<form class="form-horizontal formInput">
+					<fieldset>
+						<legend>Daten zum Kabel</legend>
+
+						<div class="expertMode hidden form-group">
+							<label for="inputMaterial" class="col-sm-2 col-md-2 control-label">Material:</label>
+							<div class="col-sm-6">
+								<select id="inputMaterial" class="form-control">
+									<option value="kupfer" selected>Kupfer</option>
+									<option value="aluminium">Aluminium</option>
+									<option value="eisen">Eisen</option>
+									<option vlaue="stahl">Stahl</option>
+								</select>
+								<span id="helpInputMaterial" class="help-block hidden-xs">spez. Widerstände in Ω x mm² / m:<br />Kupfer: 0,018 ● Aluminium: 0,028 ● Eisen: 0,1 ● Stahl: 0,17</span>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="inputDiameter" class="col-sm-2 col-md-2 control-label">Querschnitt:</label>
+							<div class="col-sm-6">
+								<div class="input-group">
+									<input id="inputDiameter" class="form-control">
+									<span class="input-group-addon">mm2</span>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="inputLength" class="col-sm-2 control-label">Länge:</label>
+							<div class="col-sm-6">
+								<div class="input-group">
+									<input id="inputLength" class="form-control">
+									<span class="input-group-addon">m</span>
+								</div>
+							</div>
+						</div>
+					</fieldset>
+
+					<fieldset>
+						<legend>Daten zu Strom und Zünder</legend>
+
+						<div class="form-group">
+							<label for="inputVoltage" class="col-sm-2 control-label">Spannung:</label>
+							<div class="col-sm-6">
+								<div class="input-group">
+									<input id="inputVoltage" class="form-control">
+									<span class="input-group-addon">V</span>
+								</div>
+							</div>
+						</div>
+
+						<div class="expertMode hidden form-group">
+							<label for="inputFuseType" class="col-sm-2 control-label">Zünder-Typ:</label>
+							<div class="col-sm-6">
+								<select id="inputFuseType" class="form-control">
+									<option value="aZuender" selected>A-Zünder</option>
+									<option value="uZuender">U-Zünder</option>
+								</select>
+								<span id="helpInputAmpereTolerance" class="help-block hidden-xs">
+									A-Zünder: I = 0,8A ● U-Zünder: I = 1,5A
+								</span>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="inputFuseCount" class="col-sm-2 control-label">Anzahl Zünder:</label>
+							<div class="col-sm-6">
+								<input id="inputFuseCount" class="form-control" readonly="readonly">
+							</div>
+						</div>
+					</fieldset>
+
+					<div class="form-group">
+						<div class="col-sm-6 col-sm-offset-2">
+							<button id="calcBtn" class="btn btn-success btn-lg btn-block">LOS</button>
+							<button id="resetBtn" class="btn btn-warning btn-lg btn-block">Zurücksetzen</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript" src="js/jquery-2.1.3.js"></script>
+	<script type="text/javascript" src="js/bootstrap.js"></script>
+	<script type="text/javascript" src="js/bootstrap-switch.js"></script>
+	<script type="text/javascript">
+
+	var R_Kennwerte = new Map();	// in Ohm * mm2 / m
+	// siehe http://www.feuerwerk.net/wiki/Z%C3%BCndleitung
+	R_Kennwerte.set("kupfer", 0.018);
+	R_Kennwerte.set("aluminium", 0.028);
+	R_Kennwerte.set("eisen", 0.1);
+	R_Kennwerte.set("stahl", 0.17);
+
+	var I_Kennwerte = new Map();	// in Ampere
+	// siehe http://www.feuerwerk.net/wiki/Z%C3%BCndkreisberechnung
+	// Werte beinhalten etwas Sicherheit
+	I_Kennwerte.set("aZuender", 0.8);
+	I_Kennwerte.set("uZuender", 1.5);
+
+	var calcResistanceWire = function(material, diameterWire, lengthWire) {
+		return R_Kennwerte.get(material) / diameterWire * lengthWire;
+	}
+
+	var calcFuseCount = function(voltage, fuseType, resistanceWire) {
+		var R_Zuender;
+		if (fuseType === "aZuender") {
+			R_Zuender = 2; // Ohm
+		} else if (fuseType === "uZuender") {
+			R_Zuender = 0.8; // Ohm
+		}
+		return (voltage/I_Kennwerte.get(fuseType) - resistanceWire) / R_Zuender;
+	}
+
+	var calcVoltage = function(fuseCount, fuseType, resistanceWire) {
+		var R_Zuender;
+		if (fuseType === "aZuender") {
+			R_Zuender = 2; // Ohm
+		} else if (fuseType === "uZuender") {
+			R_Zuender = 0.8; // Ohm
+		}
+		if (fuseCount == 0) return -1;
+		return (fuseCount * R_Zuender + resistanceWire)*I_Kennwerte.get(fuseType);
+	}
+
+	var initExpertOn = function() {
+		// show all form elements
+		$(".expertMode").each(function() {
+			$(this).removeClass("hidden");
+		});
+	}
+
+	var initExpertOff = function() {
+		// hide unnecessary form elements
+		$(".expertMode").each(function() {
+			$(this).addClass("hidden");
+		});
+	}
+
+	$("document").ready(function() {
+		var whichCalculation = "fuse";
+
+		var inputMaterial = $("#inputMaterial option:selected");
+		var inputDiameter = $("#inputDiameter");
+		var inputLength = $("#inputLength");
+		var inputFuseType = $("#inputFuseType option:selected");
+		var inputVoltage = $("#inputVoltage");
+		var inputFuseCount = $("#inputFuseCount");
+
+		$.fn.bootstrapSwitch.defaults.labelText = 'Expertenmodus?';
+		$("#expertToggle").bootstrapSwitch('state', false, true);
+		$("#expertToggle").on('switchChange.bootstrapSwitch', function(event, state) {
+			// console.log(this); // DOM element
+			// console.log(event); // jQuery event
+			// console.log(state); // true | false
+			if (state === true) {
+				initExpertOn();
+			} else if (state === false) {
+				initExpertOff();
+			}
+		});
+
+		$.fn.bootstrapSwitch.defaults.labelText = '';
+		$.fn.bootstrapSwitch.defaults.onText = 'Zünderzahl';
+		$.fn.bootstrapSwitch.defaults.offText = 'Spannung';
+		$.fn.bootstrapSwitch.defaults.size = 'large';
+		$("#calcToggle").bootstrapSwitch('state', true, false);
+		$("#calcToggle").on('switchChange.bootstrapSwitch', function(event, state) {
+			// console.log(this); // DOM element
+			// console.log(event); // jQuery event
+			// console.log(state); // true | false
+			if (state === true) {
+				whichCalculation = "fuse";
+				inputFuseCount.attr("readonly", "readonly");
+				inputFuseCount.val("");
+				inputVoltage.removeAttr("readonly");
+			} else if (state === false) {
+				whichCalculation = "voltage";
+				inputVoltage.attr("readonly", "readonly");
+				inputVoltage.val("");
+				inputFuseCount.removeAttr("readonly");
+			}
+		});
+
+		$("#calcBtn").click(function(event){
+			event.preventDefault();
+
+			var material = inputMaterial.val().toLowerCase();
+			var diameter = inputDiameter.val().replace(',', '.');
+			var lengthWire = inputLength.val().replace(',', '.');
+			var voltage = inputVoltage.val().replace(',', '.');
+			var fuseType = inputFuseType.val();
+			var fuseCount = inputFuseCount.val();
+
+			if (diameter !== "" && lengthWire !== "") {
+				var resistanceWire = calcResistanceWire(material, diameter, lengthWire);
+
+				if (whichCalculation === "fuse") {
+					var count = calcFuseCount(inputVoltage.val(), inputFuseType.val(), resistanceWire);
+					count = Math.floor(count);
+					if (count < 0) count = 0;
+					inputFuseCount.val(count);
+				} else if (whichCalculation === "voltage") {
+					var volts = calcVoltage(inputFuseCount.val(), inputFuseType.val(), resistanceWire);
+					volts = Math.floor(volts) + 1;
+					if (volts < 0) volts = 0;
+					inputVoltage.val(volts);
+				}
+			}
+		});
+
+		$("#resetBtn").click(function(event) {
+			event.preventDefault();
+
+			// inputMaterial.val("Kupfer");
+			$("#inputMaterial").val("kupfer").change();
+			inputDiameter.val("");
+			inputLength.val("");
+			inputVoltage.val("");
+			// inputFuseType.val("aZuender");
+			$("#inputFuseType").val("aZuender").change();
+			inputFuseCount.val("");
+		});
+	});
+
+	</script>
+</body>
+</html>
