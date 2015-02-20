@@ -218,10 +218,10 @@
 	$("document").ready(function() {
 		var whichCalculation = "fuse";
 
-		var inputMaterial = $("#inputMaterial option:selected");
+		var inputMaterial = $("#inputMaterial");
 		var inputDiameter = $("#inputDiameter");
 		var inputLength = $("#inputLength");
-		var inputFuseType = $("#inputFuseType option:selected");
+		var inputFuseType = $("#inputFuseType");
 		var inputVoltage = $("#inputVoltage");
 		var inputFuseCount = $("#inputFuseCount");
 
@@ -262,15 +262,13 @@
 
 		$("#calcBtn").click(function(event){
 			event.preventDefault();
-			var inputMaterial = $("#inputMaterial option:selected");
-			var inputFuseType = $("#inputFuseType option:selected");
 
 			var material = inputMaterial.val().toLowerCase();
 			var diameter = inputDiameter.val().replace(',', '.');
 			var lengthWire = inputLength.val().replace(',', '.');
 			var voltage = inputVoltage.val().replace(',', '.');
-			var fuseType = inputFuseType.val();
-			var fuseCount = inputFuseCount.val();
+			var fuseType = inputFuseType.find("option:selected").val();
+			var fuseCount = inputFuseCount.find("option:selected").val();
 
 			if (diameter !== "" && lengthWire !== "") {
 				var resistanceWire = calcResistanceWire(material, diameter, lengthWire);
