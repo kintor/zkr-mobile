@@ -262,6 +262,8 @@
 
 		$("#calcBtn").click(function(event){
 			event.preventDefault();
+			var inputMaterial = $("#inputMaterial option:selected");
+			var inputFuseType = $("#inputFuseType option:selected");
 
 			var material = inputMaterial.val().toLowerCase();
 			var diameter = inputDiameter.val().replace(',', '.');
